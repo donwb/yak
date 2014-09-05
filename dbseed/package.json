@@ -1,0 +1,11 @@
+{
+  "name": "dbseed",
+  "version": "0.0.1",
+  "author" : "Don Browning",
+  "description" : "Loads a bunch of fake yaks into a mongo database",
+  "private": true,
+  "dependencies": {
+    "mongodb": "~1.4.10",
+    "underscore": "~1.7.0"
+  }
+}
