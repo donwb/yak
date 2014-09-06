@@ -1,13 +1,24 @@
 var config = require('.././mongo-config');
 var _ = require('underscore');
 
-config.setDev();
+//config.setDev();
+config.setML();
 
 var db = require('./mongo');
 
 // iteration number passed on command line
 var iterationsArg = parseInt(process.argv.slice(2));
+var dbHost = process.argv.slice(3);
+
+console.log('Using: ' + dbHost[0]);
+if(dbHost === 'ML') {
+	config.setML();
+} else {
+	config.setDev();
+}
+
 console.log(iterationsArg);
+
 if(isNaN(iterationsArg)) {
 	console.log('usage: node seed.js [iterations]');
 	process.exit(1);
