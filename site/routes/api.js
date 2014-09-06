@@ -4,7 +4,9 @@ var router = express.Router();
 var mongo = require('mongoskin');
 var config = require('../.././mongo-config');
 
-var dbstring = config.dbstring;
+var dbstring = config.mlstring;
+console.log(dbstring);
+
 
 console.log(dbstring);
 
