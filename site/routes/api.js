@@ -50,7 +50,7 @@ function runQuery(field, value, limit, callback) {
 	var query = {};
 	query[key] = value
 
-	db.yaks.find(query).limit(limit).sort({"created":-1}).toArray(function(err, items){
+	db.yaks.find(query).limit(limit).sort({_id:1}).toArray(function(err, items){
 		//console.log(items);
 		if(items.length === 0) {
 			callback({"Status" : "User not found"});
