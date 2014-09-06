@@ -13,24 +13,31 @@ if(isNaN(iterationsArg)) {
 	process.exit(1);
 }
 
-db.open(function(conn){
-    db.removeAll('yaks', function doneRemovingYaks(){
+if(iterationsArg === 0) {
+	db.open(function(conn){
+	    db.removeAll('yaks', function doneRemovingYaks(){
+	    	console.log('yaks are erased');
+	    });
+	});	
+} else {
+	db.open(function(conn){
     	var iterations = _.range(iterationsArg);
-
+    	var count = 0
     	_.each(iterations, function(i){
     		buildJSON(function(json){
 	    		db.insert(json, 'yaks', function(retValue){
-	            	console.log('Inserted yak #: ' + i);
+	    			count++;
+	            	console.log('Inserted yak #: ' + count);
 	            	// Bail when done
-	            	if(i === iterationsArg-1){
+	            	if(count === iterationsArg){
 	            		process.exit(0);
 	            	}
 	        	});
 	    	});
     	});
+	});	
+}
 
-    });
-});
 
 function buildJSON(func) {
 	var userid = Math.floor((Math.random() * 1000) + 1);
