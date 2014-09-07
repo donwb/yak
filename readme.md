@@ -6,6 +6,10 @@ I managed to get pretty decent performance numbers w/a few EC2 m1.mediums, node.
 
 You can find an example of the load test results here: [http://ldr.io/1rPk6vi](http://ldr.io/1rPk6vi)
 
+You can hit the api here:
+[http://yak.thd.io/api/yaksForArea/58](http://yak.thd.io/api/yaksForArea/58)
+[http://yak.thd.io/api/yaksForUser/3](http://yak.thd.io/api/yaksForUser/3)
+
 
 ### Goal:
 My goal with exercise was to see how many reqests/second I could get while maintaining a ~1 second response time.  How many boxes would it take in EC2 and how would MongoDB respond.
