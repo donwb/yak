@@ -11,27 +11,28 @@ You can find an example of the load test results here: [http://ldr.io/1rPk6vi](h
 My goal with exercise was to see how many reqests/second I could get while maintaining a ~1 second response time.  How many boxes would it take in EC2 and how would MongoDB respond.
 
 ### Tech:
-node.js and MongoDb - I chose 'em because (1) I'm comfortable with them and (2) I've kicked the tires on a lot of stuff, and this combo wins in most scenarios (religious debates aside)
+node.js and MongoDb - I chose 'em because (1) I'm comfortable with them and (2) I've kicked the tires quite a bit on this stuff, and this combo wins in most scenarios (religious debates aside)
 
 ### Architecture: 
 To hit the req/sec goal, I wound up with:
 
 * The [http://yak.thd.io](http://yak.thd.io) alias is CName for an Amazon Elastic Load Balancer (ELB)
 * The ELB forwards traffic to 3 m1.medium instances running Ubuntu 12.04. This is an older EC2 compute instance type, but I had a build script for it, so that's what I went with.
-* The 3 m1 instances are running node.js 10.31 and Express.
+* The 3 m1 instances are running node.js 10.31 and Express 4.
 * The Database is a "sandbox" Mongo instance running on MongoLab.
 
 ### Stuff that would make it perform better:
 Outside of spending time with strategic index placement, I didn't do a lot of optimization tweaking. Some additional stuff is below:
 
 * **Sharding** - While it's tough for me to figure out what the shard-key would be w/o really knowing the data, I have made the assumption it's possible given how I think the data works. Coming up w/a strategy for sharding will allow the DB to scale almost infinitely.
-* **Replica-sets** - Introducing a 3 node architecture for each shard of Primary/Secondary/Secondary will allow the reads to come from the replica and the writes to happen against the Primary.  This will prevent writes from blocking reads.
+* **Replica-sets** - Introducing a 3 node architecture for each shard of Primary/Secondary/Secondary will allow the reads to come from the replica and the writes to happen against the Primary.  This will prevent writes from blocking reads (i.e. when someone upvotes a yak).
 * **Streaming** - Currently the app works based on "pull to refresh", which is probably hammering your back-end. Streaming new yaks to the client will take quite a load off the back-end infrastructure.
-* **A "paid instance" of MongoDb** - This thing is running on sandbox stuff in MongoLab (and it's performing admirably). That said, spending a few bucks on the DB will speed things up dramatically.
+* **A "paid instance" of MongoDb** - This thing is running on sandbox stuff in MongoLab (considering it's free, it's performing admirably). That said, spending a few bucks on the DB will speed things up dramatically.
 * **Newer EC2 instance type** - As I mentioned, the m1.medium instance type is older and slower than the newer stuff Amazon has. I'm guessing m3.* would be faster
 * **HA Proxy** - While ELB is convenient, for production I would front-end the cluster w/HA Proxy instead.
 * **Proxy node via/nginx** - On each instance, I would use nginx to proxy traffic to node.js. Right now all traffic is being handled/brokered by node directly.
 * **Caching** - In the right places, i'm sure short-circuiting the calls to Mongo w/REDIS would speed things up quite a bit.
+* **1-VCPU** - Rather than using Cluster in node, I went w/a single VCPU instance type. Shifting to Cluster would allow node to take advantage of larger, multi-core instances.
 * **A thousand other things**
 
 ### Assumptions
